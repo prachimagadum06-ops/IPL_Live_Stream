@@ -1,0 +1,699 @@
+{% extends 'layout.html' %}
+
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h2 mb-4"><i class="fas fa-users me-2"></i>IPL 2025 Teams</h1>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="teams-grid">
+        <!-- Team cards will be generated dynamically -->
+        <div class="col">
+            <div class="card team-card h-100" data-team="MI">
+                <div class="card-header team-header bg-mi text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="team-emblem">
+                            <img src="{{ url_for('static', filename='logos/MI.svg') }}" alt="Mumbai Indians">
+                        </div>
+                        <h3 class="mb-0 ms-3">Mumbai Indians</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="team-info">
+                        <div class="mb-3">
+                            <strong><i class="fas fa-trophy me-2"></i>Championships:</strong> 
+                            <span>5 (2013, 2015, 2017, 2019, 2020)</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user-tie me-2"></i>Owner:</strong> 
+                            <span>Reliance Industries</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-home me-2"></i>Home Ground:</strong> 
+                            <span>Wankhede Stadium, Mumbai</span>
+                        </div>
+                        <div>
+                            <strong><i class="fas fa-user-shield me-2"></i>Captain:</strong> 
+                            <span>Rohit Sharma</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="card-title mb-3">Key Players</h5>
+                    <div class="key-players">
+                        <div class="player-tag">Rohit Sharma</div>
+                        <div class="player-tag">Jasprit Bumrah</div>
+                        <div class="player-tag">Suryakumar Yadav</div>
+                        <div class="player-tag">Ishan Kishan</div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal" data-team="MI">
+                        <i class="fas fa-info-circle me-2"></i>Team Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="card team-card h-100" data-team="CSK">
+                <div class="card-header team-header bg-csk text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="team-emblem">
+                            <img src="{{ url_for('static', filename='logos/CSK.svg') }}" alt="Chennai Super Kings">
+                        </div>
+                        <h3 class="mb-0 ms-3">Chennai Super Kings</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="team-info">
+                        <div class="mb-3">
+                            <strong><i class="fas fa-trophy me-2"></i>Championships:</strong> 
+                            <span>5 (2010, 2011, 2018, 2021, 2023)</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user-tie me-2"></i>Owner:</strong> 
+                            <span>Chennai Super Kings Cricket Ltd.</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-home me-2"></i>Home Ground:</strong> 
+                            <span>M.A. Chidambaram Stadium, Chennai</span>
+                        </div>
+                        <div>
+                            <strong><i class="fas fa-user-shield me-2"></i>Captain:</strong> 
+                            <span>Ruturaj Gaikwad</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="card-title mb-3">Key Players</h5>
+                    <div class="key-players">
+                        <div class="player-tag">Ruturaj Gaikwad</div>
+                        <div class="player-tag">Ravindra Jadeja</div>
+                        <div class="player-tag">Deepak Chahar</div>
+                        <div class="player-tag">Shivam Dube</div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal" data-team="CSK">
+                        <i class="fas fa-info-circle me-2"></i>Team Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="card team-card h-100" data-team="RCB">
+                <div class="card-header team-header bg-rcb text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="team-emblem">
+                            <img src="{{ url_for('static', filename='logos/RCB.svg') }}" alt="Royal Challengers Bengaluru">
+                        </div>
+                        <h3 class="mb-0 ms-3">Royal Challengers Bengaluru</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="team-info">
+                        <div class="mb-3">
+                            <strong><i class="fas fa-trophy me-2"></i>Championships:</strong> 
+                            <span>0 (Runners-up: 2009, 2011, 2016)</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user-tie me-2"></i>Owner:</strong> 
+                            <span>United Spirits</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fas fa-home me-2"></i>Home Ground:</strong> 
+                            <span>M. Chinnaswamy Stadium, Bengaluru</span>
+                        </div>
+                        <div>
+                            <strong><i class="fas fa-user-shield me-2"></i>Captain:</strong> 
+                            <span>Faf du Plessis</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="card-title mb-3">Key Players</h5>
+                    <div class="key-players">
+                        <div class="player-tag">Virat Kohli</div>
+                        <div class="player-tag">Faf du Plessis</div>
+                        <div class="player-tag">Glenn Maxwell</div>
+                        <div class="player-tag">Mohammed Siraj</div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal" data-team="RCB">
+                        <i class="fas fa-info-circle me-2"></i>Team Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Modal -->
+    <div class="modal fade" id="teamModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header team-modal-header">
+                    <h5 class="modal-title" id="teamModalLabel">Team Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="team-modal-logo mx-auto">
+                                <div class="team-modal-emblem" id="modal-team-logo">
+                                    <img src="{{ url_for('static', filename='logos/MI.svg') }}" alt="Mumbai Indians" id="modal-team-logo-img">
+                                </div>
+                            </div>
+                            <h4 class="text-center mt-3" id="modal-team-name">Mumbai Indians</h4>
+                            <div class="team-stats text-center mt-3">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="stat-value" id="modal-team-titles">5</div>
+                                        <div class="stat-label">Titles</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-value" id="modal-team-matches">220</div>
+                                        <div class="stat-label">Matches</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-value" id="modal-team-winrate">58%</div>
+                                        <div class="stat-label">Win Rate</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>Team Information</h5>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th width="40%">Full Name</th>
+                                        <td id="modal-team-fullname">Mumbai Indians</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Owner</th>
+                                        <td id="modal-team-owner">Reliance Industries</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Coach</th>
+                                        <td id="modal-team-coach">Mahela Jayawardene</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Captain</th>
+                                        <td id="modal-team-captain">Rohit Sharma</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Home Ground</th>
+                                        <td id="modal-team-ground">Wankhede Stadium, Mumbai</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Founded</th>
+                                        <td id="modal-team-founded">2008</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h5 class="mt-4">Squad</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover" id="modal-team-squad">
+                                    <thead>
+                                        <tr>
+                                            <th>Player</th>
+                                            <th>Role</th>
+                                            <th>Nationality</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Rohit Sharma</td>
+                                            <td>Batsman</td>
+                                            <td>India</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jasprit Bumrah</td>
+                                            <td>Bowler</td>
+                                            <td>India</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Suryakumar Yadav</td>
+                                            <td>Batsman</td>
+                                            <td>India</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hardik Pandya</td>
+                                            <td>All-rounder</td>
+                                            <td>India</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ishan Kishan</td>
+                                            <td>Wicket-keeper</td>
+                                            <td>India</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-card {
+        transition: transform 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .team-header {
+        padding: 1.5rem;
+    }
+    
+    .team-emblem {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        border: 3px solid rgba(255,255,255,0.4);
+        overflow: hidden;
+    }
+    
+    .team-emblem img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 5px;
+    }
+    
+    .key-players {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .player-tag {
+        background-color: #f8f9fa;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+    
+    /* Team color backgrounds */
+    .bg-mi {
+        background: linear-gradient(135deg, #004BA0 0%, #0066CC 100%);
+    }
+    
+    .bg-csk {
+        background: linear-gradient(135deg, #F9A602 0%, #FFCC00 100%);
+    }
+    
+    .bg-rcb {
+        background: linear-gradient(135deg, #8B0000 0%, #C70039 100%);
+    }
+    
+    .bg-kkr {
+        background: linear-gradient(135deg, #3A225D 0%, #5B3B8C 100%);
+    }
+    
+    .bg-srh {
+        background: linear-gradient(135deg, #F26522 0%, #FF9933 100%);
+    }
+    
+    .bg-dc {
+        background: linear-gradient(135deg, #0078BC 0%, #17479E 100%);
+    }
+    
+    .bg-pbks {
+        background: linear-gradient(135deg, #A71930 0%, #DD1F4B 100%);
+    }
+    
+    .bg-rr {
+        background: linear-gradient(135deg, #EA1A85 0%, #FF69B4 100%);
+    }
+    
+    .bg-gt {
+        background: linear-gradient(135deg, #124589 0%, #1E8449 100%);
+    }
+    
+    .bg-lsg {
+        background: linear-gradient(135deg, #5ECDFA 0%, #0277BD 100%);
+    }
+    
+    /* Modal styles */
+    .team-modal-header {
+        background-color: #343a40;
+        color: white;
+    }
+    
+    .team-modal-logo {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+    }
+    
+    .team-modal-emblem {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        font-weight: bold;
+        color: white;
+        border: 5px solid rgba(255,255,255,0.4);
+        overflow: hidden;
+    }
+    
+    .team-modal-emblem img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 10px;
+    }
+    
+    .team-stats {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .stat-value {
+        font-weight: bold;
+        font-size: 24px;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Team data
+    const teamData = {
+        'MI': {
+            name: 'Mumbai Indians',
+            fullName: 'Mumbai Indians',
+            owner: 'Reliance Industries',
+            coach: 'Mark Boucher',
+            captain: 'Hardik Pandya',
+            homeGround: 'Wankhede Stadium, Mumbai',
+            founded: '2008',
+            titles: 5,
+            matches: 245,
+            winRate: '58%',
+            bgClass: 'bg-mi',
+            squad: [
+                { name: 'Hardik Pandya', role: 'All-rounder', nationality: 'India' },
+                { name: 'Rohit Sharma', role: 'Batsman', nationality: 'India' },
+                { name: 'Jasprit Bumrah', role: 'Bowler', nationality: 'India' },
+                { name: 'Suryakumar Yadav', role: 'Batsman', nationality: 'India' },
+                { name: 'Ishan Kishan', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Tim David', role: 'All-rounder', nationality: 'Australia' },
+                { name: 'Tilak Varma', role: 'Batsman', nationality: 'India' },
+                { name: 'Piyush Chawla', role: 'Bowler', nationality: 'India' }
+            ]
+        },
+        'CSK': {
+            name: 'Chennai Super Kings',
+            fullName: 'Chennai Super Kings',
+            owner: 'Chennai Super Kings Cricket Ltd.',
+            coach: 'Stephen Fleming',
+            captain: 'Ruturaj Gaikwad',
+            homeGround: 'M.A. Chidambaram Stadium, Chennai',
+            founded: '2008',
+            titles: 5,
+            matches: 235,
+            winRate: '59%',
+            bgClass: 'bg-csk',
+            squad: [
+                { name: 'Ruturaj Gaikwad', role: 'Batsman', nationality: 'India' },
+                { name: 'Ravindra Jadeja', role: 'All-rounder', nationality: 'India' },
+                { name: 'Deepak Chahar', role: 'Bowler', nationality: 'India' },
+                { name: 'Shivam Dube', role: 'All-rounder', nationality: 'India' },
+                { name: 'Moeen Ali', role: 'All-rounder', nationality: 'England' },
+                { name: 'Tushar Deshpande', role: 'Bowler', nationality: 'India' },
+                { name: 'Devon Conway', role: 'Batsman', nationality: 'New Zealand' },
+                { name: 'Maheesh Theekshana', role: 'Bowler', nationality: 'Sri Lanka' }
+            ]
+        },
+        'RCB': {
+            name: 'Royal Challengers Bengaluru',
+            fullName: 'Royal Challengers Bengaluru',
+            owner: 'United Spirits',
+            coach: 'Andy Flower',
+            captain: 'Faf du Plessis',
+            homeGround: 'M. Chinnaswamy Stadium, Bengaluru',
+            founded: '2008',
+            titles: 0,
+            matches: 236,
+            winRate: '48%',
+            bgClass: 'bg-rcb',
+            squad: [
+                { name: 'Virat Kohli', role: 'Batsman', nationality: 'India' },
+                { name: 'Faf du Plessis', role: 'Batsman', nationality: 'South Africa' },
+                { name: 'Glenn Maxwell', role: 'All-rounder', nationality: 'Australia' },
+                { name: 'Mohammed Siraj', role: 'Bowler', nationality: 'India' },
+                { name: 'Rajat Patidar', role: 'Batsman', nationality: 'India' },
+                { name: 'Dinesh Karthik', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Wanindu Hasaranga', role: 'All-rounder', nationality: 'Sri Lanka' },
+                { name: 'Anuj Rawat', role: 'Wicket-keeper', nationality: 'India' }
+            ]
+        },
+        'KKR': {
+            name: 'Kolkata Knight Riders',
+            fullName: 'Kolkata Knight Riders',
+            owner: 'Knight Riders Group',
+            coach: 'Chandrakant Pandit',
+            captain: 'Shreyas Iyer',
+            homeGround: 'Eden Gardens, Kolkata',
+            founded: '2008',
+            titles: 2,
+            matches: 230,
+            winRate: '51%',
+            bgClass: 'bg-kkr',
+            squad: [
+                { name: 'Shreyas Iyer', role: 'Batsman', nationality: 'India' },
+                { name: 'Andre Russell', role: 'All-rounder', nationality: 'West Indies' },
+                { name: 'Sunil Narine', role: 'All-rounder', nationality: 'West Indies' },
+                { name: 'Rinku Singh', role: 'Batsman', nationality: 'India' },
+                { name: 'Varun Chakravarthy', role: 'Bowler', nationality: 'India' },
+                { name: 'Venkatesh Iyer', role: 'All-rounder', nationality: 'India' },
+                { name: 'Mitchell Starc', role: 'Bowler', nationality: 'Australia' },
+                { name: 'Rahmanullah Gurbaz', role: 'Wicket-keeper', nationality: 'Afghanistan' }
+            ]
+        },
+        'SRH': {
+            name: 'Sunrisers Hyderabad',
+            fullName: 'Sunrisers Hyderabad',
+            owner: 'Sun TV Network',
+            coach: 'Brian Lara',
+            captain: 'Pat Cummins',
+            homeGround: 'Rajiv Gandhi International Stadium, Hyderabad',
+            founded: '2013',
+            titles: 1,
+            matches: 165,
+            winRate: '50%',
+            bgClass: 'bg-srh',
+            squad: [
+                { name: 'Pat Cummins', role: 'Bowler', nationality: 'Australia' },
+                { name: 'Heinrich Klaasen', role: 'Wicket-keeper', nationality: 'South Africa' },
+                { name: 'Bhuvneshwar Kumar', role: 'Bowler', nationality: 'India' },
+                { name: 'Abhishek Sharma', role: 'All-rounder', nationality: 'India' },
+                { name: 'Rahul Tripathi', role: 'Batsman', nationality: 'India' },
+                { name: 'Washington Sundar', role: 'All-rounder', nationality: 'India' },
+                { name: 'T Natarajan', role: 'Bowler', nationality: 'India' },
+                { name: 'Umran Malik', role: 'Bowler', nationality: 'India' }
+            ]
+        },
+        'DC': {
+            name: 'Delhi Capitals',
+            fullName: 'Delhi Capitals',
+            owner: 'JSW Group & GMR Group',
+            coach: 'Ricky Ponting',
+            captain: 'Rishabh Pant',
+            homeGround: 'Arun Jaitley Stadium, Delhi',
+            founded: '2008',
+            titles: 0,
+            matches: 228,
+            winRate: '46%',
+            bgClass: 'bg-dc',
+            squad: [
+                { name: 'Rishabh Pant', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Axar Patel', role: 'All-rounder', nationality: 'India' },
+                { name: 'Kuldeep Yadav', role: 'Bowler', nationality: 'India' },
+                { name: 'Prithvi Shaw', role: 'Batsman', nationality: 'India' },
+                { name: 'Anrich Nortje', role: 'Bowler', nationality: 'South Africa' },
+                { name: 'Mitchell Marsh', role: 'All-rounder', nationality: 'Australia' },
+                { name: 'Mukesh Kumar', role: 'Bowler', nationality: 'India' },
+                { name: 'David Warner', role: 'Batsman', nationality: 'Australia' }
+            ]
+        },
+        'PBKS': {
+            name: 'Punjab Kings',
+            fullName: 'Punjab Kings',
+            owner: 'Mohit Burman, Ness Wadia, Preity Zinta, and Karan Paul',
+            coach: 'Trevor Bayliss',
+            captain: 'Shikhar Dhawan',
+            homeGround: 'Punjab Cricket Association Stadium, Mohali',
+            founded: '2008',
+            titles: 0,
+            matches: 226,
+            winRate: '45%',
+            bgClass: 'bg-pbks',
+            squad: [
+                { name: 'Shikhar Dhawan', role: 'Batsman', nationality: 'India' },
+                { name: 'Arshdeep Singh', role: 'Bowler', nationality: 'India' },
+                { name: 'Kagiso Rabada', role: 'Bowler', nationality: 'South Africa' },
+                { name: 'Liam Livingstone', role: 'All-rounder', nationality: 'England' },
+                { name: 'Jitesh Sharma', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Sam Curran', role: 'All-rounder', nationality: 'England' },
+                { name: 'Rahul Chahar', role: 'Bowler', nationality: 'India' },
+                { name: 'Harpreet Brar', role: 'All-rounder', nationality: 'India' }
+            ]
+        },
+        'RR': {
+            name: 'Rajasthan Royals',
+            fullName: 'Rajasthan Royals',
+            owner: 'Manoj Badale, Lachlan Murdoch',
+            coach: 'Kumar Sangakkara',
+            captain: 'Sanju Samson',
+            homeGround: 'Sawai Mansingh Stadium, Jaipur',
+            founded: '2008',
+            titles: 1,
+            matches: 216,
+            winRate: '47%',
+            bgClass: 'bg-rr',
+            squad: [
+                { name: 'Sanju Samson', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Jos Buttler', role: 'Wicket-keeper', nationality: 'England' },
+                { name: 'Shimron Hetmyer', role: 'Batsman', nationality: 'West Indies' },
+                { name: 'Yashasvi Jaiswal', role: 'Batsman', nationality: 'India' },
+                { name: 'Yuzvendra Chahal', role: 'Bowler', nationality: 'India' },
+                { name: 'Trent Boult', role: 'Bowler', nationality: 'New Zealand' },
+                { name: 'Riyan Parag', role: 'All-rounder', nationality: 'India' },
+                { name: 'Ravichandran Ashwin', role: 'All-rounder', nationality: 'India' }
+            ]
+        },
+        'GT': {
+            name: 'Gujarat Titans',
+            fullName: 'Gujarat Titans',
+            owner: 'CVC Capital Partners',
+            coach: 'Ashish Nehra',
+            captain: 'Shubman Gill',
+            homeGround: 'Narendra Modi Stadium, Ahmedabad',
+            founded: '2022',
+            titles: 1,
+            matches: 35,
+            winRate: '65%',
+            bgClass: 'bg-gt',
+            squad: [
+                { name: 'Shubman Gill', role: 'Batsman', nationality: 'India' },
+                { name: 'Rashid Khan', role: 'Bowler', nationality: 'Afghanistan' },
+                { name: 'Mohammed Shami', role: 'Bowler', nationality: 'India' },
+                { name: 'Wriddhiman Saha', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'David Miller', role: 'Batsman', nationality: 'South Africa' },
+                { name: 'Rahul Tewatia', role: 'All-rounder', nationality: 'India' },
+                { name: 'Vijay Shankar', role: 'All-rounder', nationality: 'India' },
+                { name: 'Joshua Little', role: 'Bowler', nationality: 'Ireland' }
+            ]
+        },
+        'LSG': {
+            name: 'Lucknow Super Giants',
+            fullName: 'Lucknow Super Giants',
+            owner: 'RPSG Group',
+            coach: 'Andy Flower',
+            captain: 'KL Rahul',
+            homeGround: 'BRSABV Ekana Cricket Stadium, Lucknow',
+            founded: '2022',
+            titles: 0,
+            matches: 32,
+            winRate: '62%',
+            bgClass: 'bg-lsg',
+            squad: [
+                { name: 'KL Rahul', role: 'Wicket-keeper', nationality: 'India' },
+                { name: 'Nicholas Pooran', role: 'Wicket-keeper', nationality: 'West Indies' },
+                { name: 'Marcus Stoinis', role: 'All-rounder', nationality: 'Australia' },
+                { name: 'Mark Wood', role: 'Bowler', nationality: 'England' },
+                { name: 'Ravi Bishnoi', role: 'Bowler', nationality: 'India' },
+                { name: 'Krunal Pandya', role: 'All-rounder', nationality: 'India' },
+                { name: 'Deepak Hooda', role: 'All-rounder', nationality: 'India' },
+                { name: 'Avesh Khan', role: 'Bowler', nationality: 'India' }
+            ]
+        }
+    };
+    
+    // Handle team modal
+    const teamModal = document.getElementById('teamModal');
+    teamModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const teamCode = button.getAttribute('data-team');
+        const team = teamData[teamCode];
+        
+        if (team) {
+            // Update modal content
+            document.getElementById('modal-team-logo-img').src = `/static/logos/${teamCode}.svg`;
+            document.getElementById('modal-team-logo-img').alt = team.name;
+            document.getElementById('modal-team-logo').className = `team-modal-emblem ${team.bgClass}`;
+            document.getElementById('modal-team-name').textContent = team.name;
+            document.getElementById('modal-team-titles').textContent = team.titles;
+            document.getElementById('modal-team-matches').textContent = team.matches;
+            document.getElementById('modal-team-winrate').textContent = team.winRate;
+            document.getElementById('modal-team-fullname').textContent = team.fullName;
+            document.getElementById('modal-team-owner').textContent = team.owner;
+            document.getElementById('modal-team-coach').textContent = team.coach;
+            document.getElementById('modal-team-captain').textContent = team.captain;
+            document.getElementById('modal-team-ground').textContent = team.homeGround;
+            document.getElementById('modal-team-founded').textContent = team.founded;
+            
+            // Update squad table
+            const squadTable = document.getElementById('modal-team-squad');
+            const squadBody = squadTable.querySelector('tbody');
+            squadBody.innerHTML = '';
+            
+            team.squad.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player.name}</td>
+                    <td>${player.role}</td>
+                    <td>${player.nationality}</td>
+                `;
+                squadBody.appendChild(row);
+            });
+            
+            // Update modal header color
+            document.querySelector('.team-modal-header').className = `modal-header team-modal-header ${team.bgClass}`;
+        }
+    });
+});
+</script>
+{% endblock %}

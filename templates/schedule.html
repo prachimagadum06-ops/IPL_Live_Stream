@@ -1,0 +1,348 @@
+{% extends 'layout.html' %}
+
+{% block title %}Match Schedule{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="h2 mb-4"><i class="fas fa-calendar me-2"></i>IPL 2025 Match Schedule</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div id="schedule-container">
+                        <div class="text-center py-5" id="loading-schedule">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading match schedule...</p>
+                        </div>
+                        
+                        <div id="schedule-data" class="d-none">
+                            <div class="schedule-nav mb-4">
+                                <ul class="nav nav-pills nav-fill" id="schedule-tabs" role="tablist">
+                                    <!-- Tab navigation will be generated here -->
+                                </ul>
+                            </div>
+                            
+                            <div class="tab-content" id="schedule-tab-content">
+                                <!-- Tab content will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div id="no-schedule-data" class="text-center py-5 d-none">
+                            <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                            <h4>Schedule Not Available</h4>
+                            <p>The IPL 2025 schedule has not been announced yet. Please check back later.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .match-card {
+        border-left: 5px solid #007bff;
+        transition: all 0.3s ease;
+    }
+    
+    .match-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .match-date {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .match-venue {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .team-vs-team {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 15px 0;
+    }
+    
+    .team-logo-container {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .team-logo-sm {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 20px;
+        color: white;
+        overflow: hidden;
+    }
+    
+    .team-logo-sm img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 5px;
+    }
+    
+    .vs-badge {
+        background-color: #f8f9fa;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 15px;
+        font-weight: bold;
+        color: #343a40;
+        border: 2px solid #dee2e6;
+    }
+    
+    .schedule-nav .nav-link {
+        border-radius: 30px;
+        padding: 8px 20px;
+        margin: 0 5px;
+        font-weight: 500;
+    }
+    
+    .schedule-nav .nav-link.active {
+        background-color: #007bff;
+    }
+    
+    @media (max-width: 768px) {
+        .team-logo-container {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .team-logo-sm {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+        
+        .vs-badge {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch schedule data
+    fetchScheduleData();
+});
+
+function fetchScheduleData() {
+    fetch('/api/schedule')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status_code === 200 && data.schedule && Object.keys(data.schedule).length > 0) {
+                const scheduleData = processScheduleData(data.schedule);
+                
+                // Generate tabs and content
+                generateScheduleTabs(scheduleData);
+                
+                document.getElementById('loading-schedule').classList.add('d-none');
+                document.getElementById('schedule-data').classList.remove('d-none');
+                document.getElementById('no-schedule-data').classList.add('d-none');
+                
+                // Activate first tab
+                document.querySelector('#schedule-tabs .nav-link').classList.add('active');
+                document.querySelector('#schedule-tab-content .tab-pane').classList.add('show', 'active');
+            } else {
+                document.getElementById('loading-schedule').classList.add('d-none');
+                document.getElementById('schedule-data').classList.add('d-none');
+                document.getElementById('no-schedule-data').classList.remove('d-none');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching schedule data:', error);
+            document.getElementById('loading-schedule').classList.add('d-none');
+            document.getElementById('schedule-data').classList.add('d-none');
+            document.getElementById('no-schedule-data').classList.remove('d-none');
+        });
+}
+
+function processScheduleData(schedule) {
+    // Group matches by month
+    const groupedByMonth = {};
+    
+    Object.keys(schedule).forEach(matchKey => {
+        const match = schedule[matchKey];
+        const matchDate = new Date(match.Date);
+        const monthYear = matchDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        if (!groupedByMonth[monthYear]) {
+            groupedByMonth[monthYear] = [];
+        }
+        
+        groupedByMonth[monthYear].push({
+            key: matchKey,
+            date: matchDate,
+            team1: match['Team 1'],
+            team2: match['Team 2'],
+            venue: match.Venue
+        });
+    });
+    
+    // Sort matches by date within each month
+    Object.keys(groupedByMonth).forEach(month => {
+        groupedByMonth[month].sort((a, b) => a.date - b.date);
+    });
+    
+    return groupedByMonth;
+}
+
+function getTeamCode(teamName) {
+    if (!teamName) return 'UNK';
+    
+    const teamMap = {
+        'Mumbai Indians': 'MI',
+        'Chennai Super Kings': 'CSK',
+        'Kolkata Knight Riders': 'KKR',
+        'Royal Challengers Bangalore': 'RCB',
+        'Delhi Capitals': 'DC',
+        'Delhi Daredevils': 'DC',
+        'Sunrisers Hyderabad': 'SRH',
+        'Rajasthan Royals': 'RR',
+        'Kings XI Punjab': 'PBKS',
+        'Punjab Kings': 'PBKS',
+        'Deccan Chargers': 'DC',
+        'Gujarat Titans': 'GT',
+        'Lucknow Super Giants': 'LSG',
+        'Rising Pune Supergiant': 'RPS',
+        'Kochi Tuskers Kerala': 'KTK',
+        'Pune Warriors India': 'PWI'
+    };
+    
+    // Try to find the team code
+    for (const key in teamMap) {
+        if (teamName.includes(key)) {
+            return teamMap[key];
+        }
+    }
+    
+    // If not found, return first 3 letters
+    return teamName.substring(0, 3).toUpperCase();
+}
+
+function generateScheduleTabs(scheduleData) {
+    const tabsContainer = document.getElementById('schedule-tabs');
+    const tabContentContainer = document.getElementById('schedule-tab-content');
+    
+    tabsContainer.innerHTML = '';
+    tabContentContainer.innerHTML = '';
+    
+    // Get months in chronological order
+    const months = Object.keys(scheduleData);
+    
+    months.forEach((month, index) => {
+        const tabId = `month-${index}`;
+        
+        // Create tab
+        const tabItem = document.createElement('li');
+        tabItem.className = 'nav-item';
+        tabItem.innerHTML = `
+            <button class="nav-link ${index === 0 ? 'active' : ''}" 
+                    id="${tabId}-tab" 
+                    data-bs-toggle="pill" 
+                    data-bs-target="#${tabId}" 
+                    type="button" 
+                    role="tab" 
+                    aria-controls="${tabId}" 
+                    aria-selected="${index === 0 ? 'true' : 'false'}">
+                ${month}
+            </button>
+        `;
+        tabsContainer.appendChild(tabItem);
+        
+        // Create tab content
+        const tabContent = document.createElement('div');
+        tabContent.className = `tab-pane fade ${index === 0 ? 'show active' : ''}`;
+        tabContent.id = tabId;
+        tabContent.setAttribute('role', 'tabpanel');
+        tabContent.setAttribute('aria-labelledby', `${tabId}-tab`);
+        
+        // Generate match cards
+        const matches = scheduleData[month];
+        let matchesHTML = '';
+        
+        matches.forEach(match => {
+            const matchDate = match.date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                day: 'numeric', 
+                month: 'long'
+            });
+            
+            const team1Code = getTeamCode(match.team1);
+            const team2Code = getTeamCode(match.team2);
+            
+            matchesHTML += `
+                <div class="card match-card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="match-date">
+                                    <i class="far fa-calendar-alt me-2"></i>${matchDate}
+                                </div>
+                                
+                                <div class="team-vs-team my-3">
+                                    <div class="team-logo-container">
+                                        <div class="team-logo-sm bg-${team1Code.toLowerCase()}">
+                                            <img src="{{ url_for('static', filename='logos/${team1Code}.svg') }}" alt="${match.team1}">
+                                        </div>
+                                    </div>
+                                    <div class="vs-badge">VS</div>
+                                    <div class="team-logo-container">
+                                        <div class="team-logo-sm bg-${team2Code.toLowerCase()}">
+                                            <img src="{{ url_for('static', filename='logos/${team2Code}.svg') }}" alt="${match.team2}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="match-teams">
+                                    <h5>${match.team1} vs ${match.team2}</h5>
+                                </div>
+                                
+                                <div class="match-venue">
+                                    <i class="fas fa-map-marker-alt me-2"></i>${match.venue}
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-center justify-content-center">
+                                <a href="/streaming" class="btn btn-primary">
+                                    <i class="fas fa-play-circle me-2"></i>Watch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        tabContent.innerHTML = matchesHTML;
+        tabContentContainer.appendChild(tabContent);
+    });
+}
+</script>
+{% endblock %}

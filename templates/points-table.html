@@ -1,0 +1,469 @@
+{% extends 'layout.html' %}
+
+{% block title %}Points Table{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="h2 mb-4"><i class="fas fa-table me-2"></i>IPL 2025 Points Table</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div id="points-table-container">
+                        <div class="text-center py-5" id="loading-points-table">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading points table...</p>
+                        </div>
+                        
+                        <div id="points-table-data" class="d-none">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Team</th>
+                                            <th scope="col" class="text-center">Matches</th>
+                                            <th scope="col" class="text-center">Won</th>
+                                            <th scope="col" class="text-center">Lost</th>
+                                            <th scope="col" class="text-center">Tied</th>
+                                            <th scope="col" class="text-center">NR</th>
+                                            <th scope="col" class="text-center">Points</th>
+                                            <th scope="col" class="text-center">NRR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="points-table-body">
+                                        <!-- Table rows will be generated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="legend mt-4">
+                                <h6 class="mb-3">Legend</h6>
+                                <div class="row">
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="legend-color bg-success"></div>
+                                            <div>Playoff Qualification</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="legend-color bg-warning"></div>
+                                            <div>Playoff Contention</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="legend-color bg-danger"></div>
+                                            <div>Eliminated</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <abbr title="Net Run Rate" class="text-decoration-none">NRR</abbr>
+                                            <div class="ms-2">Net Run Rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="no-points-data" class="text-center py-5 d-none">
+                            <i class="fas fa-table fa-4x text-muted mb-3"></i>
+                            <h4>Points Table Not Available</h4>
+                            <p>The IPL 2025 points table will be updated once the tournament begins.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Team Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chart-container">
+                        <div class="text-center py-5" id="loading-chart">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading performance data...</p>
+                        </div>
+                        
+                        <div id="chart-data" class="d-none">
+                            <ul class="nav nav-tabs mb-4" id="chartTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="points-chart-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#points-chart" type="button" role="tab" 
+                                            aria-controls="points-chart" aria-selected="true">
+                                        Points
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="win-loss-chart-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#win-loss-chart" type="button" role="tab" 
+                                            aria-controls="win-loss-chart" aria-selected="false">
+                                        Win/Loss Ratio
+                                    </button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content" id="chartTabContent">
+                                <div class="tab-pane fade show active" id="points-chart" role="tabpanel" aria-labelledby="points-chart-tab">
+                                    <div class="chart-wrapper" style="height: 300px;">
+                                        <canvas id="teamPointsChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="win-loss-chart" role="tabpanel" aria-labelledby="win-loss-chart-tab">
+                                    <div class="chart-wrapper" style="height: 300px;">
+                                        <canvas id="winLossChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="no-chart-data" class="text-center py-5 d-none">
+                            <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                            <h4>Performance Data Not Available</h4>
+                            <p>Team performance charts will be available once the tournament begins.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-logo-sm {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: white;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+    
+    .team-logo-sm img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 4px;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+    
+    .qualification-row {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+    
+    .contention-row {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+    
+    .eliminated-row {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    
+    .chart-wrapper {
+        position: relative;
+        margin: auto;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch points table data
+    fetchPointsTableData();
+});
+
+function fetchPointsTableData() {
+    fetch('/api/points-table')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status_code === 200 && data.points_table && Object.keys(data.points_table).length > 0) {
+                // Process and display points table
+                renderPointsTable(data.points_table);
+                
+                // Render charts
+                renderTeamCharts(data.points_table);
+                
+                document.getElementById('loading-points-table').classList.add('d-none');
+                document.getElementById('loading-chart').classList.add('d-none');
+                document.getElementById('points-table-data').classList.remove('d-none');
+                document.getElementById('chart-data').classList.remove('d-none');
+                document.getElementById('no-points-data').classList.add('d-none');
+                document.getElementById('no-chart-data').classList.add('d-none');
+            } else {
+                document.getElementById('loading-points-table').classList.add('d-none');
+                document.getElementById('loading-chart').classList.add('d-none');
+                document.getElementById('points-table-data').classList.add('d-none');
+                document.getElementById('chart-data').classList.add('d-none');
+                document.getElementById('no-points-data').classList.remove('d-none');
+                document.getElementById('no-chart-data').classList.remove('d-none');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching points table data:', error);
+            document.getElementById('loading-points-table').classList.add('d-none');
+            document.getElementById('loading-chart').classList.add('d-none');
+            document.getElementById('points-table-data').classList.add('d-none');
+            document.getElementById('chart-data').classList.add('d-none');
+            document.getElementById('no-points-data').classList.remove('d-none');
+            document.getElementById('no-chart-data').classList.remove('d-none');
+        });
+}
+
+function renderPointsTable(pointsTableData) {
+    const tableBody = document.getElementById('points-table-body');
+    tableBody.innerHTML = '';
+    
+    // Convert to array and sort by points (descending)
+    const teamsArray = Object.keys(pointsTableData).map(key => {
+        return {
+            key: key,
+            ...pointsTableData[key]
+        };
+    });
+    
+    // Sort by points (descending) and then by Net Run Rate (if available)
+    teamsArray.sort((a, b) => {
+        if (a.Points !== b.Points) {
+            return b.Points - a.Points;
+        }
+        // If NRR is available, use it as secondary sort
+        if (a.NRR && b.NRR) {
+            return parseFloat(b.NRR) - parseFloat(a.NRR);
+        }
+        return 0;
+    });
+    
+    teamsArray.forEach((team, index) => {
+        const teamCode = team.Name.substring(0, 3).toUpperCase();
+        const noResult = team.Matches - team.Wins - team.Losses - (team.Tied || 0);
+        
+        // Determine row status class based on position
+        let rowStatusClass = '';
+        if (index < 4) {
+            rowStatusClass = 'qualification-row';
+        } else if (index < 6) {
+            rowStatusClass = 'contention-row';
+        } else if (teamsArray.length > 8 && index >= teamsArray.length - 2) {
+            rowStatusClass = 'eliminated-row';
+        }
+        
+        const row = document.createElement('tr');
+        row.className = rowStatusClass;
+        
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="team-logo-sm bg-${teamCode.toLowerCase()}">
+                        <img src="{{ url_for('static', filename='logos/${teamCode}.svg') }}" alt="${team.Name}">
+                    </div>
+                    <span>${team.Name}</span>
+                </div>
+            </td>
+            <td class="text-center">${team.Matches}</td>
+            <td class="text-center">${team.Wins}</td>
+            <td class="text-center">${team.Losses}</td>
+            <td class="text-center">${team.Tied || 0}</td>
+            <td class="text-center">${noResult}</td>
+            <td class="text-center"><strong>${team.Points}</strong></td>
+            <td class="text-center">${team.NRR || 'N/A'}</td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+}
+
+function renderTeamCharts(pointsTableData) {
+    // Prepare data for charts
+    const teams = [];
+    const points = [];
+    const wins = [];
+    const losses = [];
+    
+    Object.keys(pointsTableData).forEach(key => {
+        const team = pointsTableData[key];
+        // Use short name or code
+        teams.push(team.Name.substring(0, 3).toUpperCase());
+        points.push(team.Points);
+        wins.push(team.Wins);
+        losses.push(team.Losses);
+    });
+    
+    // Create points chart
+    createPointsChart(teams, points);
+    
+    // Create win/loss chart
+    createWinLossChart(teams, wins, losses);
+}
+
+function createPointsChart(teams, points) {
+    const ctx = document.getElementById('teamPointsChart').getContext('2d');
+    
+    // Generate team colors
+    const colors = teams.map(team => getTeamColor(team));
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: teams,
+            datasets: [{
+                label: 'Points',
+                data: points,
+                backgroundColor: colors,
+                borderColor: colors.map(color => darkenColor(color, 20)),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const idx = tooltipItems[0].dataIndex;
+                            return teams[idx];
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Points'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Teams'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createWinLossChart(teams, wins, losses) {
+    const ctx = document.getElementById('winLossChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: teams,
+            datasets: [
+                {
+                    label: 'Wins',
+                    data: wins,
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                    borderColor: 'rgb(40, 167, 69)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Losses',
+                    data: losses,
+                    backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                    borderColor: 'rgb(220, 53, 69)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const idx = tooltipItems[0].dataIndex;
+                            return teams[idx];
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Matches'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Teams'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function getTeamColor(teamCode) {
+    const colorMap = {
+        'MI': 'rgba(0, 102, 204, 0.7)',
+        'CSK': 'rgba(255, 204, 0, 0.7)',
+        'RCB': 'rgba(204, 0, 0, 0.7)',
+        'KKR': 'rgba(102, 0, 153, 0.7)',
+        'SRH': 'rgba(255, 153, 0, 0.7)',
+        'DC': 'rgba(0, 153, 204, 0.7)',
+        'PBKS': 'rgba(204, 51, 153, 0.7)',
+        'RR': 'rgba(255, 102, 178, 0.7)',
+        'GT': 'rgba(0, 153, 51, 0.7)',
+        'LSG': 'rgba(0, 204, 153, 0.7)'
+    };
+    
+    return colorMap[teamCode] || 'rgba(108, 117, 125, 0.7)';
+}
+
+function darkenColor(color, percent) {
+    // Simple function to darken a rgba color
+    if (color.startsWith('rgba(')) {
+        const values = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+        if (values) {
+            const r = Math.max(0, parseInt(values[1]) - percent);
+            const g = Math.max(0, parseInt(values[2]) - percent);
+            const b = Math.max(0, parseInt(values[3]) - percent);
+            const a = parseFloat(values[4]);
+            return `rgba(${r}, ${g}, ${b}, ${a})`;
+        }
+    }
+    return color;
+}
+</script>
+{% endblock %}
