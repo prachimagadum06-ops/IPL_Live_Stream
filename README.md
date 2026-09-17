@@ -70,6 +70,31 @@ A historical record of **IPL winners, MVPs, and key milestones** from **2008 to 
 
 4. Visit `http://localhost:5000` in your browser
 
+### MongoDB (optional)
+
+Set these environment variables before starting the app to persist the stream URL in MongoDB:
+
+```powershell
+$env:MONGODB_URI = "mongodb+srv://<user>:<password>@<cluster>/<database>"
+$env:MONGODB_DATABASE = "ipl_streaming"
+python main.py
+```
+
+The app also loads a local `.env` file and accepts either `MONGODB_URI` or `MONGO_URI`.
+
+The connection status is available at `/api/mongodb/status`. Without `MONGODB_URI`, the app continues using its local in-memory stream setting.
+
+### Authentication
+
+- Register: `/register`
+- Login: `/login`
+- Logout: `POST /logout`
+- Forgot password: `/forgot-password`
+- Reset password: `/reset-password?token=...`
+
+User accounts are stored in MongoDB with hashed passwords in the `users` collection.
+Password reset emails require `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_FROM` in `.env`. Reset tokens expire after 30 minutes.
+
 ## API Integration
 
 The application fetches data from multiple endpoints:

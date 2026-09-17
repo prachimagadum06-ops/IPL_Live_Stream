@@ -39,6 +39,26 @@ function initializePlayer(streamUrl) {
     videoElement.removeAttribute('src');
     videoElement.load();
     
+    // Play regular video files directly; use HLS.js only for HLS streams.
+    if (!streamUrl.toLowerCase().includes('.m3u8')) {
+        videoElement.src = streamUrl;
+        videoElement.addEventListener('loadedmetadata', function() {
+            playerReady = true;
+            videoElement.play().catch(error => {
+                console.warn('Auto-play failed:', error);
+                showPlayButtonOverlay();
+            });
+            document.getElementById('video-loading').classList.add('d-none');
+        }, { once: true });
+        videoElement.addEventListener('error', function() {
+            console.error('Video error:', videoElement.error);
+            showStreamError();
+        }, { once: true });
+        setupVideoElementListeners(videoElement);
+        videoElement.load();
+        return;
+    }
+
     // Check if HLS.js is supported
     if (Hls.isSupported()) {
         // Destroy existing HLS instance if any

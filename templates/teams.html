@@ -652,12 +652,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    let apiTeamData = {};
+
+    fetch('/api/teams')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status_code !== 200 || !data.teams) {
+                throw new Error('Teams data is unavailable');
+            }
+
+            apiTeamData = data.teams;
+            renderTeamCards(apiTeamData);
+        })
+        .catch(error => console.error('Error fetching teams:', error));
+
+    function renderTeamCards(teams) {
+        const grid = document.getElementById('teams-grid');
+        grid.innerHTML = '';
+
+        Object.entries(teams).forEach(([code, team]) => {
+            const players = (team.keyPlayers || []).map(player => `<div class="player-tag">${player}</div>`).join('');
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="col">
+                    <div class="card team-card h-100" data-team="${code}">
+                        <div class="card-header team-header ${team.bgClass} text-white">
+                            <div class="d-flex align-items-center">
+                                <div class="team-emblem">
+                                    <img src="/static/logos/${code}.svg" alt="${team.name}">
+                                </div>
+                                <h3 class="mb-0 ms-3">${team.name}</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="team-info">
+                                <div class="mb-3"><strong><i class="fas fa-trophy me-2"></i>Championships:</strong> <span>${team.titles}</span></div>
+                                <div class="mb-3"><strong><i class="fas fa-user-tie me-2"></i>Owner:</strong> <span>${team.owner}</span></div>
+                                <div class="mb-3"><strong><i class="fas fa-home me-2"></i>Home Ground:</strong> <span>${team.homeGround}</span></div>
+                                <div><strong><i class="fas fa-user-shield me-2"></i>Captain:</strong> <span>${team.captain}</span></div>
+                            </div>
+                            <hr class="my-4">
+                            <h5 class="card-title mb-3">Key Players</h5>
+                            <div class="key-players">${players}</div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal" data-team="${code}">
+                                <i class="fas fa-info-circle me-2"></i>Team Details
+                            </button>
+                        </div>
+                    </div>
+                </div>`);
+        });
+
+        initializeTeamCards();
+    }
+
     // Handle team modal
     const teamModal = document.getElementById('teamModal');
     teamModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const teamCode = button.getAttribute('data-team');
-        const team = teamData[teamCode];
+        const team = apiTeamData[teamCode] || teamData[teamCode];
         
         if (team) {
             // Update modal content
@@ -680,7 +734,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const squadBody = squadTable.querySelector('tbody');
             squadBody.innerHTML = '';
             
-            team.squad.forEach(player => {
+            const squad = team.squad || (team.keyPlayers || []).map(name => ({
+                name,
+                role: 'Player',
+                nationality: 'India'
+            }));
+
+            squad.forEach(player => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${player.name}</td>

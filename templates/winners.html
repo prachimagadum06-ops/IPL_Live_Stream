@@ -393,13 +393,16 @@ function renderWinnersTable(winnersData) {
         // Get team code for background colors
         const winnerCode = getTeamCode(data.Winner);
         const runnerUpCode = getTeamCode(data.Runner_Up || data['Runner Up']);
+        const winnerLogo = getTeamLogo(winnerCode, data.Winner);
+        const runnerUpName = data.Runner_Up || data['Runner Up'];
+        const runnerUpLogo = getTeamLogo(runnerUpCode, runnerUpName);
         
         row.innerHTML = `
             <td>${year}</td>
             <td>
                 <div class="d-flex align-items-center">
                     <div class="team-logo-winner bg-${winnerCode.toLowerCase()}">
-                        <img src="{{ url_for('static', filename='logos/${winnerCode}.svg') }}" alt="${data.Winner}">
+                        ${winnerLogo}
                     </div>
                     <span>${data.Winner}</span>
                 </div>
@@ -407,7 +410,7 @@ function renderWinnersTable(winnersData) {
             <td>
                 <div class="d-flex align-items-center">
                     <div class="team-logo-winner bg-${runnerUpCode.toLowerCase()}">
-                        <img src="{{ url_for('static', filename='logos/${runnerUpCode}.svg') }}" alt="${data.Runner_Up || data['Runner Up']}">
+                        ${runnerUpLogo}
                     </div>
                     <span>${data.Runner_Up || data['Runner Up']}</span>
                 </div>
@@ -418,6 +421,13 @@ function renderWinnersTable(winnersData) {
         
         tableBody.appendChild(row);
     });
+}
+
+function getTeamLogo(teamCode, teamName) {
+    const availableLogos = ['MI', 'CSK', 'RCB', 'KKR', 'SRH', 'DC', 'PBKS', 'RR', 'GT', 'LSG'];
+    if (!availableLogos.includes(teamCode)) return '';
+
+    return `<img src="/static/logos/${teamCode}.svg" alt="${teamName}" loading="lazy">`;
 }
 
 function renderTitleCountChart(winnersData) {
@@ -485,6 +495,7 @@ function getTeamCode(teamName) {
         'Mumbai Indians': 'MI',
         'Chennai Super Kings': 'CSK',
         'Kolkata Knight Riders': 'KKR',
+        'Royal Challengers Bengaluru': 'RCB',
         'Royal Challengers Bangalore': 'RCB',
         'Delhi Capitals': 'DC',
         'Delhi Daredevils': 'DC',

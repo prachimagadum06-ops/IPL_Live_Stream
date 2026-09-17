@@ -30,6 +30,7 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <img class="live-score-dashboard-image" src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=240&q=85" alt="Cricket bat and ball dashboard image">
                             <div id="live-score-container">
                                 <div class="text-center py-5" id="loading-live-score">
                                     <div class="spinner-border text-primary" role="status">
@@ -42,7 +43,7 @@
                                     <div class="row score-board">
                                         <div class="col-5 text-center">
                                             <div class="team-logo mb-2" id="team1-logo">
-                                                <i class="fas fa-shield-alt fa-3x"></i>
+                                                <span class="text-muted">Waiting</span>
                                             </div>
                                             <h5 id="team1-name"></h5>
                                             <h3 id="team1-score" class="score"></h3>
@@ -52,7 +53,7 @@
                                         </div>
                                         <div class="col-5 text-center">
                                             <div class="team-logo mb-2" id="team2-logo">
-                                                <i class="fas fa-shield-alt fa-3x"></i>
+                                                <span class="text-muted">Waiting</span>
                                             </div>
                                             <h5 id="team2-name"></h5>
                                             <h3 id="team2-score" class="score"></h3>
@@ -166,7 +167,7 @@
             <div class="col">
                 <div class="card team-card h-100" data-team="MI">
                     <div class="team-logo-bg bg-mi">
-                        <div class="team-logo">MI</div>
+                        <img src="{{ url_for('static', filename='logos/MI.svg') }}" alt="Mumbai Indians" class="team-logo-img">
                     </div>
                     <div class="card-body text-center">
                         <h5 class="card-title">Mumbai Indians</h5>
@@ -176,7 +177,7 @@
             <div class="col">
                 <div class="card team-card h-100" data-team="CSK">
                     <div class="team-logo-bg bg-csk">
-                        <div class="team-logo">CSK</div>
+                        <img src="{{ url_for('static', filename='logos/CSK.svg') }}" alt="Chennai Super Kings" class="team-logo-img">
                     </div>
                     <div class="card-body text-center">
                         <h5 class="card-title">Chennai Super Kings</h5>
@@ -186,7 +187,7 @@
             <div class="col">
                 <div class="card team-card h-100" data-team="RCB">
                     <div class="team-logo-bg bg-rcb">
-                        <div class="team-logo">RCB</div>
+                        <img src="{{ url_for('static', filename='logos/RCB.svg') }}" alt="Royal Challengers Bengaluru" class="team-logo-img">
                     </div>
                     <div class="card-body text-center">
                         <h5 class="card-title">Royal Challengers Bengaluru</h5>
@@ -196,7 +197,7 @@
             <div class="col">
                 <div class="card team-card h-100" data-team="KKR">
                     <div class="team-logo-bg bg-kkr">
-                        <div class="team-logo">KKR</div>
+                        <img src="{{ url_for('static', filename='logos/KKR.svg') }}" alt="Kolkata Knight Riders" class="team-logo-img">
                     </div>
                     <div class="card-body text-center">
                         <h5 class="card-title">Kolkata Knight Riders</h5>
@@ -206,7 +207,7 @@
             <div class="col">
                 <div class="card team-card h-100" data-team="SRH">
                     <div class="team-logo-bg bg-srh">
-                        <div class="team-logo">SRH</div>
+                        <img src="{{ url_for('static', filename='logos/SRH.svg') }}" alt="Sunrisers Hyderabad" class="team-logo-img">
                     </div>
                     <div class="card-body text-center">
                         <h5 class="card-title">Sunrisers Hyderabad</h5>
@@ -232,10 +233,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fetch schedule preview
     fetchSchedulePreview();
+
+    // Fetch the current team directory
+    fetchTeamsPreview();
     
     // Set up refresh interval for live data (every 30 seconds)
     setInterval(fetchLiveScore, 30000);
 });
+
+function fetchTeamsPreview() {
+    fetch('/api/teams')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status_code !== 200 || !data.teams) return;
+
+            const container = document.getElementById('teams-container');
+            container.innerHTML = '';
+
+            Object.entries(data.teams).forEach(([code, team]) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="col">
+                        <div class="card team-card h-100" data-team="${code}">
+                            <div class="team-logo-bg ${team.bgClass}">
+                                <img src="/static/logos/${code}.svg" alt="${team.name}" class="team-logo-img">
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${team.name}</h5>
+                            </div>
+                        </div>
+                    </div>`);
+            });
+
+            initializeTeamCards();
+        })
+        .catch(error => console.error('Error fetching teams:', error));
+}
 
 function fetchLiveScore() {
     fetch('/api/live-score')
@@ -286,17 +318,15 @@ function updateTeamLogo(elementId, teamCode) {
     logoElement.innerHTML = '';
     
     if (teamCode) {
-        // Create team logo with initials
-        const teamInitial = document.createElement('div');
-        teamInitial.className = 'team-initial';
-        teamInitial.textContent = teamCode;
-        
-        // Add team-specific class for color
-        logoElement.className = 'team-logo mb-2 bg-' + teamCode.toLowerCase();
-        logoElement.appendChild(teamInitial);
+        const logoImg = document.createElement('img');
+        const teamInfo = getTeamInfo(teamCode);
+        logoImg.src = `/static/logos/${teamInfo.code}.svg`;
+        logoImg.alt = teamCode;
+        logoImg.className = 'team-logo-img';
+        logoElement.className = 'team-logo mb-2 bg-' + teamInfo.code.toLowerCase();
+        logoElement.appendChild(logoImg);
     } else {
-        // Default icon if team code is not available
-        logoElement.innerHTML = '<i class="fas fa-shield-alt fa-3x"></i>';
+        logoElement.innerHTML = '<span class="text-muted">Waiting</span>';
     }
 }
 
@@ -314,12 +344,13 @@ function fetchPointsTablePreview() {
                 teams.forEach(teamKey => {
                     const team = data.points_table[teamKey];
                     const row = document.createElement('tr');
+                    const teamCode = getTeamInfo(team.Name).code;
                     
                     row.innerHTML = `
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="team-icon me-2 bg-${team.Name.substring(0, 3).toLowerCase()}">
-                                    ${team.Name.substring(0, 3)}
+                                <div class="team-icon me-2 bg-${teamCode.toLowerCase()}">
+                                    <img src="/static/logos/${teamCode}.svg" alt="${team.Name}" class="team-logo-img">
                                 </div>
                                 <span>${team.Name}</span>
                             </div>
@@ -374,14 +405,16 @@ function fetchSchedulePreview() {
                         year: 'numeric' 
                     });
                     
+                    const team1Code = getTeamInfo(match['Team 1']).code;
+                    const team2Code = getTeamInfo(match['Team 2']).code;
                     matchItem.innerHTML = `
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <div class="match-date">${formattedDate}</div>
                                 <div class="match-teams">
-                                    <span class="team-short bg-${match['Team 1'].substring(0, 3).toLowerCase()}">${match['Team 1'].substring(0, 3)}</span>
+                                    <span class="team-short bg-${team1Code.toLowerCase()}"><img src="/static/logos/${team1Code}.svg" alt="${match['Team 1']}" class="team-logo-img"></span>
                                     vs
-                                    <span class="team-short bg-${match['Team 2'].substring(0, 3).toLowerCase()}">${match['Team 2'].substring(0, 3)}</span>
+                                    <span class="team-short bg-${team2Code.toLowerCase()}"><img src="/static/logos/${team2Code}.svg" alt="${match['Team 2']}" class="team-logo-img"></span>
                                 </div>
                                 <div class="match-venue"><i class="fas fa-map-marker-alt me-1"></i>${match.Venue}</div>
                             </div>

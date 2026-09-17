@@ -202,7 +202,8 @@ function processScheduleData(schedule) {
             date: matchDate,
             team1: match['Team 1'],
             team2: match['Team 2'],
-            venue: match.Venue
+            venue: match.Venue,
+            time: match.Time || match.time || match['Match Time'] || match['Start Time'] || ''
         });
     });
     
@@ -214,12 +215,27 @@ function processScheduleData(schedule) {
     return groupedByMonth;
 }
 
+function formatMatchTime(match) {
+    if (match.time) return match.time;
+
+    if (match.date.getHours() || match.date.getMinutes()) {
+        return match.date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+    }
+
+    return 'Time TBA';
+}
+
 function getTeamCode(teamName) {
     if (!teamName) return 'UNK';
     
     const teamMap = {
         'Mumbai Indians': 'MI',
         'Chennai Super Kings': 'CSK',
+        'Royal Challengers Bengaluru': 'RCB',
         'Kolkata Knight Riders': 'KKR',
         'Royal Challengers Bangalore': 'RCB',
         'Delhi Capitals': 'DC',
@@ -297,6 +313,7 @@ function generateScheduleTabs(scheduleData) {
             
             const team1Code = getTeamCode(match.team1);
             const team2Code = getTeamCode(match.team2);
+            const matchTime = formatMatchTime(match);
             
             matchesHTML += `
                 <div class="card match-card mb-3">
@@ -306,17 +323,21 @@ function generateScheduleTabs(scheduleData) {
                                 <div class="match-date">
                                     <i class="far fa-calendar-alt me-2"></i>${matchDate}
                                 </div>
+
+                                <div class="match-time mt-2">
+                                    <i class="far fa-clock me-2"></i><strong>Scheduled time:</strong> ${matchTime}
+                                </div>
                                 
                                 <div class="team-vs-team my-3">
                                     <div class="team-logo-container">
                                         <div class="team-logo-sm bg-${team1Code.toLowerCase()}">
-                                            <img src="{{ url_for('static', filename='logos/${team1Code}.svg') }}" alt="${match.team1}">
+                                            <img src="/static/logos/${team1Code}.svg" alt="${match.team1}" loading="lazy">
                                         </div>
                                     </div>
                                     <div class="vs-badge">VS</div>
                                     <div class="team-logo-container">
                                         <div class="team-logo-sm bg-${team2Code.toLowerCase()}">
-                                            <img src="{{ url_for('static', filename='logos/${team2Code}.svg') }}" alt="${match.team2}">
+                                            <img src="/static/logos/${team2Code}.svg" alt="${match.team2}" loading="lazy">
                                         </div>
                                     </div>
                                 </div>

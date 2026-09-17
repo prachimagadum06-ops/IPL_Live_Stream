@@ -257,7 +257,7 @@ function renderPointsTable(pointsTableData) {
     });
     
     teamsArray.forEach((team, index) => {
-        const teamCode = team.Name.substring(0, 3).toUpperCase();
+        const teamCode = getTeamInfo(team.Name).code;
         const noResult = team.Matches - team.Wins - team.Losses - (team.Tied || 0);
         
         // Determine row status class based on position
@@ -278,7 +278,7 @@ function renderPointsTable(pointsTableData) {
             <td>
                 <div class="d-flex align-items-center">
                     <div class="team-logo-sm bg-${teamCode.toLowerCase()}">
-                        <img src="{{ url_for('static', filename='logos/${teamCode}.svg') }}" alt="${team.Name}">
+                        <img src="/static/logos/${teamCode}.svg" alt="${team.Name}" loading="lazy">
                     </div>
                     <span>${team.Name}</span>
                 </div>
@@ -305,8 +305,7 @@ function renderTeamCharts(pointsTableData) {
     
     Object.keys(pointsTableData).forEach(key => {
         const team = pointsTableData[key];
-        // Use short name or code
-        teams.push(team.Name.substring(0, 3).toUpperCase());
+        teams.push(getTeamInfo(team.Name).code);
         points.push(team.Points);
         wins.push(team.Wins);
         losses.push(team.Losses);
